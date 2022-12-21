@@ -1,0 +1,64 @@
+{% extends 'event/base.html' %}
+
+{% block content %}
+
+
+    <div class="card-body">
+
+        <form method=POST action="{% url 'search_events' %}">
+        {% csrf_token %}
+
+        <input class="form-control me-2" type="search" placeholder="Search Venues" aria-label="Search" name="searched">
+        <br/>
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </form>
+
+    </div>
+    
+  <br/>
+  {% for event in events %}
+  <div class="card">
+    <h5 class="card-header">{{ event.event }}</h5>
+    <div class="card-body">
+   
+      <h5 class="card-title"></h5>
+      <p class="card-text">
+        
+            <li> Date: {{ event.date }}</li>
+            <!-- second "event" must be "venue, but it was a mistake" -->
+            <li>Venue website: {{ event.event.website }}</li> 
+            <li> Manager: {{ event.manager }}</li>
+            <li> Description: {{ event.description }}</li>
+            <li> <strong>Attendees:</strong> 
+            {% for user in event.attendees.all %}
+            <li>{{ user }} </li>
+            {% endfor %}
+
+  
+      </p>
+      
+    </div>
+        {% if user.is_authenticated %}
+        {% if user == event.manager %}
+        <div class="card-footer text-muted">
+        
+        <a href="{% url 'update-event' event.id %}" class="btn btn-outline-secondary btn-sm">Update Event</a>
+
+        <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-sm">Delete Event</a>
+        
+    </div>
+    {% endif %}  
+    {% endif %}
+</div>
+
+
+
+
+
+<br/><br/>
+  {% endfor %}
+
+
+
+
+{% endblock  %}
